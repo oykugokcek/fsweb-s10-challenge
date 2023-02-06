@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { nanoid } from "nanoid";
 import { useHistory } from "react-router";
 import Gratitude from "./../assets/grForm.png";
+import { notEkleAPI } from "../actions";
+import { useDispatch } from "react-redux";
 
 export default function PostForm() {
   const {
@@ -12,16 +14,22 @@ export default function PostForm() {
   } = useForm({ mode: "onChange" });
 
   const history = useHistory();
+  const dispatch = useDispatch();
 
   function onSubmit(data) {
     const yeniNot = {
       id: nanoid(),
       date: Date(),
-      body: Object.values(data)
-        .filter((v) => v !== "")
-        .join("|"),
+      body: JSON.stringify(
+        Object.values(data)
+          .filter((v) => v !== "")
+          .join("|")
+      ),
     };
-
+    console.log(onSubmit);
+    console.log(yeniNot);
+    dispatch(notEkleAPI(yeniNot));
+    setTimeout(() => history.push("/notlar"));
     // burada ilgili eylemi dispatch edin
     // toast mesajı gösterin
     // sonra aşağıdaki satırı aktifleştirin
@@ -36,7 +44,6 @@ export default function PostForm() {
         <img src={Gratitude} alt="" className="block object-cover h-full" />
       </div>
 
-
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-3 p-8 flex-1"
@@ -48,8 +55,8 @@ export default function PostForm() {
           yansıtmalara kadar pek çok şeyden oluşabilir.
         </p>
         <p className="text-stone-700 my-3 text-xs">
-          Her gün belli saatlerde 3 maddeden oluşan bir liste
-          yapmak, bu alışkanlığa iyi bir başlangıç noktası sayılır.
+          Her gün belli saatlerde 3 maddeden oluşan bir liste yapmak, bu
+          alışkanlığa iyi bir başlangıç noktası sayılır.
         </p>
         <div>
           <input
@@ -76,10 +83,7 @@ export default function PostForm() {
           />
         </div>
 
-        <button
-          type="submit"
-          className="myButton"
-        >
+        <button type="submit" className="myButton">
           Ekle
         </button>
       </form>
